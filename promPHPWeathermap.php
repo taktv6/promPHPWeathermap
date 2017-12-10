@@ -7,31 +7,31 @@
 
 class WeatherMapDataSource_prometheus extends WeatherMapDataSource
 {
-    function Recognise($targetstring)
+    function Recognise($targetString)
     {
-        if (preg_match("/^prometheus:.*$/", $targetstring)) {
+        if (preg_match("/^prometheus:.*$/", $targetString)) {
             return true;
         } else {
             return false;
         }
     }
 
-    function ReadData($targetstring, &$map, &$item)
+    function ReadData($targetString, &$map, &$item)
     {
-        $parts = explode(':', $targetstring);
+        $parts = explode(':', $targetString);
         $router = $parts[1];
         $device = $parts[2];
 
-        $query_rx = "irate(node_network_receive_bytes{instance='$router:9100',device='$device'}[5m])";
-        $query_tx = "irate(node_network_transmit_bytes{instance='$router:9100',device='$device'}[5m])";
+        $queryRx = "irate(node_network_receive_bytes{instance='$router:9100',device='$device'}[5m])";
+        $queryTx = "irate(node_network_transmit_bytes{instance='$router:9100',device='$device'}[5m])";
 
-        $rx_rate = $this->prometheus_query($query_rx) * 8;
-        $tx_rate = $this->prometheus_query($query_tx) * 8;
+        $rxRate = $this->prometheusQuery($queryRx) * 8;
+        $txRate = $this->prometheusQuery($queryTx) * 8;
 
-        return (array($rx_rate, $tx_rate, 0));
+        return (array($rxRate, $txRate, 0));
     }
 
-    function prometheus_query($query)
+    function prometheusQuery($query)
     {
         $time = time();
         $query = urlencode($query);
