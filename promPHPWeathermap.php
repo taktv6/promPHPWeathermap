@@ -7,18 +7,24 @@
 
 class WeatherMapDataSource_prometheus extends WeatherMapDataSource
 {
-    function Recognise($targetString)
+    /**
+     * @param string $target
+     * @return bool
+     */
+    function Recognise($target)
     {
-        if (preg_match('/^prometheus:.*$/', $targetString)) {
-            return true;
-        } else {
-            return false;
-        }
+        return (bool)preg_match('/^prometheus:.*$/', $target);
     }
 
-    function ReadData($targetString, &$map, &$item)
+    /**
+     * @param string $target
+     * @param        $map
+     * @param        $item
+     * @return array
+     */
+    function ReadData($target, &$map, &$item)
     {
-        $parts = explode(':', $targetString);
+        $parts = explode(':', $target);
         $router = $parts[1];
         $device = $parts[2];
 
@@ -39,6 +45,12 @@ class WeatherMapDataSource_prometheus extends WeatherMapDataSource
         return (array($rxRate, $txRate, 0));
     }
 
+    /**
+     * Query the prometheus Server on localhost
+     *
+     * @param string $query
+     * @return int
+     */
     function prometheusQuery($query)
     {
         $time = time();
