@@ -1,0 +1,14 @@
+# Generic cache files
+*~
+.~*
+*.tmp
+*.temp
+*.lock
+*.DS_Store
+.*.swp
+*.out
+Thumbs.db
+_vimrc_local.vim
+
+# PHPstorm files
+/.idea/
