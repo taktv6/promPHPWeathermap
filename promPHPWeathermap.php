@@ -9,7 +9,7 @@ class WeatherMapDataSource_prometheus extends WeatherMapDataSource
 {
     function Recognise($targetString)
     {
-        if (preg_match("/^prometheus:.*$/", $targetString)) {
+        if (preg_match('/^prometheus:.*$/', $targetString)) {
             return true;
         } else {
             return false;
@@ -22,8 +22,16 @@ class WeatherMapDataSource_prometheus extends WeatherMapDataSource
         $router = $parts[1];
         $device = $parts[2];
 
-        $queryRx = "irate(node_network_receive_bytes{instance='$router:9100',device='$device'}[5m])";
-        $queryTx = "irate(node_network_transmit_bytes{instance='$router:9100',device='$device'}[5m])";
+        $queryRx = sprintf(
+            'irate(node_network_receive_bytes{instance=\'%s:9100\',device=\'%s\'}[5m])',
+            $router,
+            $device
+        );
+        $queryTx = sprintf(
+            'irate(node_network_transmit_bytes{instance=\'%s:9100\',device=\'%s\'}[5m])',
+            $router,
+            $device
+        );
 
         $rxRate = $this->prometheusQuery($queryRx) * 8;
         $txRate = $this->prometheusQuery($queryTx) * 8;
@@ -35,7 +43,7 @@ class WeatherMapDataSource_prometheus extends WeatherMapDataSource
     {
         $time = time();
         $query = urlencode($query);
-        $url = "http://localhost:9090/api/v1/query?time=$time&query=$query";
+        $url = sprintf('http://localhost:9090/api/v1/query?time=%s&query=%s', $time, $query);
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
