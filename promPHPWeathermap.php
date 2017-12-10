@@ -7,6 +7,9 @@
 
 class WeatherMapDataSource_prometheus extends WeatherMapDataSource
 {
+    /** @var string */
+    protected $prometheusHost = 'http://localhost:9090';
+
     /**
      * @param string $target
      * @return bool
@@ -55,7 +58,7 @@ class WeatherMapDataSource_prometheus extends WeatherMapDataSource
     {
         $time = time();
         $query = urlencode($query);
-        $url = sprintf('http://localhost:9090/api/v1/query?time=%s&query=%s', $time, $query);
+        $url = sprintf('%s/api/v1/query?time=%s&query=%s', $this->prometheusHost, $time, $query);
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
